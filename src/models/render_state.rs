@@ -12,4 +12,9 @@ pub struct RenderState {
     pub uniform_buffer: wgpu::Buffer,
     pub bind_group: wgpu::BindGroup,
     pub depth_view: wgpu::TextureView,
+
+    // Mist clouds
+    pub mist_pipeline: wgpu::RenderPipeline,
+    pub mist_uniform_buffer: wgpu::Buffer,
+    pub mist_bind_group: wgpu::BindGroup,
 }

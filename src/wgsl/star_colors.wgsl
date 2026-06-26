@@ -28,7 +28,11 @@ fn vs_main(in: VertexInput) -> VertexOutput
     return out;
 }
 
-const SHADOW_COLOR: vec3<f32> = vec3<f32>(0.0, 0.14, 0.0);
+// Star color
+// Hint: the colors are actually percentages of RGB values.
+// For, SHADOW_COLOR, the value (0.0, 0.14.1, 0.0) represents => RGB(0, 36, 0), HEX #002400
+// The Green value 36 divided by 255 (max color value) = 0.1411 => becomes 0.141
+const SHADOW_COLOR: vec3<f32> = vec3<f32>(0.0, 0.047058823529411764, 0.0);
 const BASE_COLOR: vec3<f32> = vec3<f32>(0.0, 0.25, 0.0);
 const HIGHLIGHT_COLOR: vec3<f32> = vec3<f32>(0, 0.937, 0);
 

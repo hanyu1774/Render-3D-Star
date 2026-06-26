@@ -12,6 +12,8 @@ use crate::flows::create_uniform_binding;
 use crate::flows::create_window;
 use crate::flows::handle_input;
 use crate::flows::init_gpu;
+use crate::flows::mist_binding;
+use crate::flows::mist_shader;
 use crate::flows::render_frame;
 use crate::flows::render_texture;
 use crate::flows::resize_surface;
@@ -24,22 +26,23 @@ struct App {
     window: Option<Arc<Window>>,
     state: Option<RenderState>,
     last_frame: Instant,
+    start_time: Instant,
     angle: f32,
 }
 
 impl Default for App {
     fn default() -> Self {
+        let now = Instant::now();
         Self {
             window: None,
             state: None,
-            last_frame: Instant::now(),
+            last_frame: now,
+            start_time: now,
             angle: 0.0,
         }
     }
 }
 
-// Orchestration only: each step is delegated to its own Flow, and the
-// results are assembled into the Model. No GPU logic lives here directly.
 async fn build_render_state(window: Arc<Window>) -> RenderState {
     let (surface, device, queue, config) = init_gpu::run(window).await;
 
@@ -47,6 +50,9 @@ async fn build_render_state(window: Arc<Window>) -> RenderState {
     let (uniform_buffer, bind_group_layout, bind_group) = create_uniform_binding::run(&device);
     let pipeline = compile_shader::run(&device, config.format, &bind_group_layout);
     let depth_view = render_texture::run(&device, &config);
+
+    let (mist_uniform_buffer, mist_bind_group_layout, mist_bind_group) = mist_binding::run(&device);
+    let mist_pipeline = mist_shader::run(&device, config.format, &mist_bind_group_layout);
 
     RenderState {
         surface,
@@ -60,6 +66,9 @@ async fn build_render_state(window: Arc<Window>) -> RenderState {
         uniform_buffer,
         bind_group,
         depth_view,
+        mist_pipeline,
+        mist_uniform_buffer,
+        mist_bind_group,
     }
 }
 
@@ -93,20 +102,20 @@ impl ApplicationHandler for App {
                     state.depth_view = render_texture::run(&state.device, &state.config);
                 }
             }
+            InputAction::ToggleFullscreen => {
+                let target = toggle_fullscreen::run(window.fullscreen());
+                window.set_fullscreen(target);
+            }
             InputAction::Redraw => {
                 let now = Instant::now();
                 let dt = (now - self.last_frame).as_secs_f32();
                 self.last_frame = now;
                 self.angle += dt * 0.8;
+                let elapsed = (now - self.start_time).as_secs_f32();
 
-                render_frame::run(state, self.angle);
+                render_frame::run(state, self.angle, elapsed);
                 window.request_redraw();
             }
-            InputAction::ToggleFullscreen => {
-                let target = toggle_fullscreen::run(window.fullscreen());
-                window.set_fullscreen(target);
-            }
-
             InputAction::Ignore => {}
         }
     }

@@ -1,5 +1,4 @@
 use crate::models::depth_format::DEPTH_FORMAT;
-use crate::models::star_geometry::StarVertex;
 
 pub fn run(
     device: &wgpu::Device,
@@ -7,40 +6,23 @@ pub fn run(
     bind_group_layout: &wgpu::BindGroupLayout,
 ) -> wgpu::RenderPipeline {
     let shader = device.create_shader_module(wgpu::ShaderModuleDescriptor {
-        label: Some("star_shader"),
-        source: wgpu::ShaderSource::Wgsl(include_str!("../wgsl/star_colors.wgsl").into()),
+        label: Some("mist_shader"),
+        source: wgpu::ShaderSource::Wgsl(include_str!("../wgsl/mist_clouds.wgsl").into()),
     });
 
     let pipeline_layout = device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
-        label: Some("pipeline_layout"),
+        label: Some("mist_pipeline_layout"),
         bind_group_layouts: &[Some(bind_group_layout)],
         immediate_size: 0,
     });
 
-    let vertex_layout = wgpu::VertexBufferLayout {
-        array_stride: std::mem::size_of::<StarVertex>() as wgpu::BufferAddress,
-        step_mode: wgpu::VertexStepMode::Vertex,
-        attributes: &[
-            wgpu::VertexAttribute {
-                format: wgpu::VertexFormat::Float32x3,
-                offset: 0,
-                shader_location: 0,
-            },
-            wgpu::VertexAttribute {
-                format: wgpu::VertexFormat::Float32x3,
-                offset: std::mem::size_of::<[f32; 3]>() as wgpu::BufferAddress,
-                shader_location: 1,
-            },
-        ],
-    };
-
     device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
-        label: Some("star_pipeline"),
+        label: Some("mist_pipeline"),
         layout: Some(&pipeline_layout),
         vertex: wgpu::VertexState {
             module: &shader,
             entry_point: Some("vs_main"),
-            buffers: &[vertex_layout],
+            buffers: &[],
             compilation_options: wgpu::PipelineCompilationOptions::default(),
         },
         fragment: Some(wgpu::FragmentState {
@@ -48,16 +30,16 @@ pub fn run(
             entry_point: Some("fs_main"),
             targets: &[Some(wgpu::ColorTargetState {
                 format: surface_format,
-                blend: Some(wgpu::BlendState::REPLACE),
+                blend: Some(wgpu::BlendState::ALPHA_BLENDING),
                 write_mask: wgpu::ColorWrites::ALL,
             })],
             compilation_options: wgpu::PipelineCompilationOptions::default(),
         }),
         primitive: wgpu::PrimitiveState::default(),
         depth_stencil: Some(wgpu::DepthStencilState {
-            format: DEPTH_FORMAT,
-            depth_write_enabled: Some(true),
-            depth_compare: Some(wgpu::CompareFunction::Less),
+            format: DEPTH_FORMAT,             // must match the pass's depth attachment
+            depth_write_enabled: Some(false), // never writes depth...
+            depth_compare: Some(wgpu::CompareFunction::Always), // ...and never gets rejected by it
             stencil: wgpu::StencilState::default(),
             bias: wgpu::DepthBiasState::default(),
         }),

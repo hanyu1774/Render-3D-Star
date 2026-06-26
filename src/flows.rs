@@ -3,6 +3,8 @@ pub mod create_uniform_binding;
 pub mod create_window;
 pub mod handle_input;
 pub mod init_gpu;
+pub mod mist_binding;
+pub mod mist_shader;
 pub mod render_frame;
 pub mod render_texture;
 pub mod resize_surface;
