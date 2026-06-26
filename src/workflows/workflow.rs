@@ -15,6 +15,7 @@ use crate::flows::init_gpu;
 use crate::flows::render_frame;
 use crate::flows::render_texture;
 use crate::flows::resize_surface;
+use crate::flows::toggle_fullscreen;
 use crate::flows::upload_star_geometry;
 use crate::models::input_action::InputAction;
 use crate::models::render_state::RenderState;
@@ -101,6 +102,11 @@ impl ApplicationHandler for App {
                 render_frame::run(state, self.angle);
                 window.request_redraw();
             }
+            InputAction::ToggleFullscreen => {
+                let target = toggle_fullscreen::run(window.fullscreen());
+                window.set_fullscreen(target);
+            }
+
             InputAction::Ignore => {}
         }
     }

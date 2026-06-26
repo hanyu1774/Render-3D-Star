@@ -6,4 +6,5 @@ pub mod init_gpu;
 pub mod render_frame;
 pub mod render_texture;
 pub mod resize_surface;
+pub mod toggle_fullscreen;
 pub mod upload_star_geometry;

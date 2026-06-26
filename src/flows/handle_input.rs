@@ -14,6 +14,15 @@ pub fn run(event: &WindowEvent) -> InputAction {
                 },
             ..
         } => InputAction::Quit,
+        WindowEvent::KeyboardInput {
+            event:
+                KeyEvent {
+                    physical_key: PhysicalKey::Code(KeyCode::F11),
+                    state: ElementState::Pressed,
+                    ..
+                },
+            ..
+        } => InputAction::ToggleFullscreen,
         WindowEvent::Resized(size) => InputAction::Resize(size.width, size.height),
         WindowEvent::RedrawRequested => InputAction::Redraw,
         _ => InputAction::Ignore,
