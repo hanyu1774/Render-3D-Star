@@ -67,7 +67,7 @@ fn fs_main(in: VertexOutput) -> @location(0) vec4<f32> {
     uv.x = uv.x * mist.aspect; // keep the noise pattern square regardless of window shape
 
     // speed of the moving clouds
-    let drift = vec2<f32>(mist.time * 0.10, mist.time * 0.015); // movement speed
+    let drift = vec2<f32>(mist.time * 0.13, mist.time * 0.015); // movement speed
     let scale = 2.2; // cloud size -- bigger = larger, fewer clouds
 
     let n1 = fbm(uv * scale + drift);
