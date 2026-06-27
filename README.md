@@ -14,7 +14,7 @@ In the version, where you can see a 3D star:
 
 In this entire project, no object file is used. Everything is rendered via WGSL. The vertices and indices of the 3D star are found in `src/models/star_geometry.rs`.
 
-## Code structure explained
+## Code structure briefly explained
 
 You will see four folders in `src/`. The code follows the IOSP and Separation of Concerns principles. Each responsibility is found in the following folders:
 
