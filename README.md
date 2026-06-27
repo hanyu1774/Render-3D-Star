@@ -10,4 +10,4 @@ In the background you will see stars, some of them are glim stars.
 
 In the version, where you can see a 3D star:
 * It will spin in a circle
-* Its colors will change throughout time.
+* Its colors will change over time.
