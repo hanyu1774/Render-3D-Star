@@ -12,7 +12,7 @@ pub fn run(device: &wgpu::Device) -> (wgpu::Buffer, wgpu::BindGroupLayout, wgpu:
         label: Some("uniform_layout"),
         entries: &[wgpu::BindGroupLayoutEntry {
             binding: 0,
-            visibility: wgpu::ShaderStages::VERTEX,
+            visibility: wgpu::ShaderStages::VERTEX | wgpu::ShaderStages::FRAGMENT, // was VERTEX only
             ty: wgpu::BindingType::Buffer {
                 ty: wgpu::BufferBindingType::Uniform,
                 has_dynamic_offset: false,

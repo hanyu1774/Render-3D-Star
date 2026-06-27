@@ -8,14 +8,14 @@ use crate::models::uniforms::Uniforms;
 pub fn run(state: &mut RenderState, angle_radians: f32, time_seconds: f32) {
     let aspect = state.config.width as f32 / state.config.height as f32;
 
-    let star_uniforms = build_star_uniforms(angle_radians, aspect);
+    let star_uniforms = build_star_uniforms(angle_radians, aspect, time_seconds);
     state
         .queue
         .write_buffer(&state.uniform_buffer, 0, bytemuck::bytes_of(&star_uniforms));
 
     let mist_uniforms = build_mist_uniforms(time_seconds, aspect);
     state.queue.write_buffer(
-        &state.mist_uniform_buffer,
+        &state.green_mist_uniform_buffer,
         0,
         bytemuck::bytes_of(&mist_uniforms),
     );
@@ -39,9 +39,10 @@ pub fn run(state: &mut RenderState, angle_radians: f32, time_seconds: f32) {
     if tex_size.width != state.config.width || tex_size.height != state.config.height {
         state.config.width = tex_size.width;
         state.config.height = tex_size.height;
-        // VIOLATION: DON'T USE A FLOW INSIDE ANOTHER FLOW!
-        // NEED TO FIX THIS LATER.
-        // BUT FOR NOW, IT SERVES TO THE FIX THE FULLSCREEN CRASH WHEN HITTING F11.
+
+        // VIOLATION!! DON'T USE A FLOW INSIDE ANOTHER FLOW!
+        // Need to fix that later.
+        // For now, this fixes the fullscreen crash
         state.depth_view = render_texture::run(&state.device, &state.config);
     }
     let view = surface_texture
@@ -81,11 +82,15 @@ pub fn run(state: &mut RenderState, angle_radians: f32, time_seconds: f32) {
             multiview_mask: None,
         });
         pass.set_pipeline(&state.starfield_pipeline);
-        pass.set_bind_group(0, &state.mist_bind_group, &[]);
+        pass.set_bind_group(0, &state.green_mist_bind_group, &[]);
         pass.draw(0..3, 0..1);
 
-        pass.set_pipeline(&state.mist_pipeline);
-        pass.set_bind_group(0, &state.mist_bind_group, &[]);
+        pass.set_pipeline(&state.nebula_pipeline);
+        pass.set_bind_group(0, &state.green_mist_bind_group, &[]); // same buffer, time and aspect only
+        pass.draw(0..3, 0..1);
+
+        pass.set_pipeline(&state.green_mist_pipeline);
+        pass.set_bind_group(0, &state.green_mist_bind_group, &[]);
         pass.draw(0..3, 0..1);
 
         pass.set_pipeline(&state.pipeline);
@@ -99,7 +104,7 @@ pub fn run(state: &mut RenderState, angle_radians: f32, time_seconds: f32) {
     surface_texture.present();
 }
 
-fn build_star_uniforms(angle_radians: f32, aspect: f32) -> Uniforms {
+fn build_star_uniforms(angle_radians: f32, aspect: f32, time_seconds: f32) -> Uniforms {
     let model = Mat4::from_rotation_y(angle_radians);
     let view = Mat4::from_translation(Vec3::new(0.0, 0.0, -5.0));
     let projection = Mat4::perspective_rh(45f32.to_radians(), aspect, 0.1, 100.0);
@@ -107,6 +112,10 @@ fn build_star_uniforms(angle_radians: f32, aspect: f32) -> Uniforms {
     Uniforms {
         mvp: mvp.to_cols_array_2d(),
         model: model.to_cols_array_2d(),
+        time: time_seconds,
+        _pad0: 0.0,
+        _pad1: 0.0,
+        _pad2: 0.0,
     }
 }
 

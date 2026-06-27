@@ -6,18 +6,18 @@ pub fn run(
     bind_group_layout: &wgpu::BindGroupLayout,
 ) -> wgpu::RenderPipeline {
     let shader = device.create_shader_module(wgpu::ShaderModuleDescriptor {
-        label: Some("mist_shader"),
-        source: wgpu::ShaderSource::Wgsl(include_str!("../wgsl/green_mist_clouds.wgsl").into()),
+        label: Some("nebula_shader"),
+        source: wgpu::ShaderSource::Wgsl(include_str!("../wgsl/nebula_clouds.wgsl").into()),
     });
 
     let pipeline_layout = device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
-        label: Some("mist_pipeline_layout"),
+        label: Some("nebula_pipeline_layout"),
         bind_group_layouts: &[Some(bind_group_layout)],
         immediate_size: 0,
     });
 
     device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
-        label: Some("mist_pipeline"),
+        label: Some("nebula_pipeline"),
         layout: Some(&pipeline_layout),
         vertex: wgpu::VertexState {
             module: &shader,
@@ -37,9 +37,9 @@ pub fn run(
         }),
         primitive: wgpu::PrimitiveState::default(),
         depth_stencil: Some(wgpu::DepthStencilState {
-            format: DEPTH_FORMAT,             // must match the pass's depth attachment
-            depth_write_enabled: Some(false), // never writes depth...
-            depth_compare: Some(wgpu::CompareFunction::Always), // ...and never gets rejected by it
+            format: DEPTH_FORMAT,
+            depth_write_enabled: Some(false),
+            depth_compare: Some(wgpu::CompareFunction::Always),
             stencil: wgpu::StencilState::default(),
             bias: wgpu::DepthBiasState::default(),
         }),

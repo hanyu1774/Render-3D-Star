@@ -68,7 +68,7 @@ fn fs_main(in: VertexOutput) -> @location(0) vec4<f32> {
 
     // speed of the moving clouds
     let drift = vec2<f32>(mist.time * 0.13, mist.time * 0.015); // movement speed
-    let scale = 2.2; // cloud size -- bigger = larger, fewer clouds
+    let scale = 1.3; // cloud size -- bigger = larger, fewer clouds
 
     let n1 = fbm(uv * scale + drift);
     let n2 = fbm(uv * scale * 1.7 - drift * 1.3 + vec2<f32>(5.2, 1.3));

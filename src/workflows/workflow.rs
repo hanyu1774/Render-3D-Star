@@ -14,6 +14,7 @@ use crate::flows::handle_input;
 use crate::flows::init_gpu;
 use crate::flows::mist_binding;
 use crate::flows::mist_shader;
+use crate::flows::nebula_shader;
 use crate::flows::render_frame;
 use crate::flows::render_texture;
 use crate::flows::resize_surface;
@@ -52,9 +53,13 @@ async fn build_render_state(window: Arc<Window>) -> RenderState {
     let pipeline = compile_shader::run(&device, config.format, &bind_group_layout);
     let depth_view = render_texture::run(&device, &config);
 
-    let (mist_uniform_buffer, mist_bind_group_layout, mist_bind_group) = mist_binding::run(&device);
-    let mist_pipeline = mist_shader::run(&device, config.format, &mist_bind_group_layout);
-    let starfield_pipeline = starfield_shader::run(&device, config.format, &mist_bind_group_layout);
+    let (green_mist_uniform_buffer, green_mist_bind_group_layout, green_mist_bind_group) =
+        mist_binding::run(&device);
+    let green_mist_pipeline =
+        mist_shader::run(&device, config.format, &green_mist_bind_group_layout);
+    let nebula_pipeline = nebula_shader::run(&device, config.format, &green_mist_bind_group_layout);
+    let starfield_pipeline =
+        starfield_shader::run(&device, config.format, &green_mist_bind_group_layout);
 
     RenderState {
         surface,
@@ -68,9 +73,10 @@ async fn build_render_state(window: Arc<Window>) -> RenderState {
         uniform_buffer,
         bind_group,
         depth_view,
-        mist_pipeline,
-        mist_uniform_buffer,
-        mist_bind_group,
+        green_mist_pipeline,
+        green_mist_uniform_buffer,
+        green_mist_bind_group,
+        nebula_pipeline,
         starfield_pipeline,
     }
 }

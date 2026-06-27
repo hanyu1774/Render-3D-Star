@@ -13,10 +13,13 @@ pub struct RenderState {
     pub bind_group: wgpu::BindGroup,
     pub depth_view: wgpu::TextureView,
 
-    // Mist clouds
-    pub mist_pipeline: wgpu::RenderPipeline,
-    pub mist_uniform_buffer: wgpu::Buffer,
-    pub mist_bind_group: wgpu::BindGroup,
+    // Green nebula clouds
+    pub green_mist_pipeline: wgpu::RenderPipeline,
+    pub green_mist_uniform_buffer: wgpu::Buffer,
+    pub green_mist_bind_group: wgpu::BindGroup,
+
+    // Other nebula clouds
+    pub nebula_pipeline: wgpu::RenderPipeline,
 
     // Starfields
     pub starfield_pipeline: wgpu::RenderPipeline,
