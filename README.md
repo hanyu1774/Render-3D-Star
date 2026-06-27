@@ -11,3 +11,14 @@ In the background you will see stars, some of them are glim stars.
 In the version, where you can see a 3D star:
 * It will spin in a circle
 * Its colors will change over time.
+
+In this entire project, no object file is used. Everything is rendered via WGSL. The vertices and indices of the 3D star are found in `src/models/star_geometry.rs`.
+
+## Code structure explained
+
+You will see four folders in `src/`. The code follows the IOSP and Separation of Concerns principles. Each responsibility is found in the following folders:
+
+* `models/`: Pure data
+* `flows/`: tasks
+* `workflows/`: orchestration of tasks
+* `wgsl/`: the WGSL instruction can be found here.
