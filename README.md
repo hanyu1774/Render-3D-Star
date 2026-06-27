@@ -22,3 +22,13 @@ You will see four folders in `src/`. The code follows the IOSP and Separation of
 * `flows/`: tasks
 * `workflows/`: orchestration of tasks
 * `wgsl/`: the WGSL instructions can be found here.
+
+The main function `run()` in the file `src/workflows/workflow.rs` is used in `src/main.rs` to run the whole application.
+
+## Used dependencies
+
+* `bytemuck`
+* `glam`
+* `pollster`
+* `wgpu`
+* `winit`
