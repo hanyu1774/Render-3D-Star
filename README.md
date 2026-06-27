@@ -21,4 +21,4 @@ You will see four folders in `src/`. The code follows the IOSP and Separation of
 * `models/`: Pure data
 * `flows/`: tasks
 * `workflows/`: orchestration of tasks
-* `wgsl/`: the WGSL instruction can be found here.
+* `wgsl/`: the WGSL instructions can be found here.
