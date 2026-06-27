@@ -1,5 +1,6 @@
 use glam::{Mat4, Vec3};
 
+use crate::flows::render_texture;
 use crate::models::mist_uniforms::MistUniforms;
 use crate::models::render_state::RenderState;
 use crate::models::uniforms::Uniforms;
@@ -34,7 +35,15 @@ pub fn run(state: &mut RenderState, angle_radians: f32, time_seconds: f32) {
         | wgpu::CurrentSurfaceTexture::Validation => return,
         wgpu::CurrentSurfaceTexture::Lost => return,
     };
-
+    let tex_size = surface_texture.texture.size();
+    if tex_size.width != state.config.width || tex_size.height != state.config.height {
+        state.config.width = tex_size.width;
+        state.config.height = tex_size.height;
+        // VIOLATION: DON'T USE A FLOW INSIDE ANOTHER FLOW!
+        // NEED TO FIX THIS LATER.
+        // BUT FOR NOW, IT SERVES TO THE FIX THE FULLSCREEN CRASH WHEN HITTING F11.
+        state.depth_view = render_texture::run(&state.device, &state.config);
+    }
     let view = surface_texture
         .texture
         .create_view(&wgpu::TextureViewDescriptor::default());
